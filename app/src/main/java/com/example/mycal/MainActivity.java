@@ -113,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleParentheses() {
         int openParentheses = 0, closedParentheses = 0;
+
+        // Count open and closed parentheses in the current expression
         for (int i = 0; i < expression.length(); i++) {
             if (expression.charAt(i) == '(') {
                 openParentheses++;
@@ -121,14 +123,27 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        char lastChar = expression.length() > 0 ? expression.charAt(expression.length() - 1) : ' ';
-        if (openParentheses > closedParentheses && (Character.isDigit(lastChar) || lastChar == ')')) {
-            expression.append(")");
-        } else if (lastChar == '(' || isOperator(lastChar)) {
-            expression.append("(");
+        char lastChar;
+
+        if (expression.length() > 0) {
+            lastChar = expression.charAt(expression.length() - 1);
         } else {
-            expression.append("*(");
+            lastChar = ' ';
         }
+
+        // If last char is a digit or a closing parenthesis, and there are unclosed parentheses
+        if (Character.isDigit(lastChar) || lastChar == ')') {
+            if (openParentheses > closedParentheses) {
+                expression.append(")");
+            } else {
+                expression.append("*(");
+            }
+        }
+        // If last char is an operator or there's nothing yet, add an opening parenthesis
+        else if (isOperator(lastChar) || lastChar == ' ' || lastChar == '(') {
+            expression.append("(");
+        }
+
         displayExpression.setText(expression);
     }
 
